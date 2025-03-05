@@ -8,6 +8,7 @@ export const AppContext = createContext({
   isAuthenticated: false,
   login: () => {},
   logout: () => {},
+  nowPlaying: [],
 });
 export const AppContextProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -16,15 +17,17 @@ export const AppContextProvider = ({ children }) => {
 
   function handleLogin(data) {
     const token = data.accessToken;
-    localStorage.setItem("access-token", token);
     try {
       const decodedToken = jwtDecode(token);
-      setAccountId(decodedToken.account_id);
+      if (decodedToken.exp * 1000 > Date.now()) {
+        localStorage.setItem("access-token", token);
+        setAccountId(decodedToken.account_id);
+        setIsAuthenticated(true);
+        getProfile();
+      }
     } catch (error) {
       console.error("Failed to decode token:", error);
     }
-    setIsAuthenticated(true);
-    getProfile();
   }
 
   function handleLogout() {
@@ -61,7 +64,7 @@ export const AppContextProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem("access-token");
     if (token) {
-      handleLogin({accessToken: token});
+      handleLogin({ accessToken: token });
     }
   }, []);
 

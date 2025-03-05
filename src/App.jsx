@@ -5,20 +5,27 @@ import MainLayout from "./components/MainLayout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { AppContextProvider } from "./AppContext";
+import { MovieProvider } from "./context/MovieContext";
+import BuyTicket from "./pages/BuyTicket";
+import Booking from "./pages/Booking.jsx";
 
 function App() {
   return (
     <AppContextProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<MainLayout />}>
-            <Route index element={<Home />} />
-            <Route path="home" element={<Home />} />
-            <Route path="login" element={<Login />} />
-            <Route path="register" element={<Register />} />
-          </Route>
-        </Routes>
-      </Router>
+      <MovieProvider>
+        <Router>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/" element={<MainLayout />}>
+              <Route index element={<Home />} />
+              <Route path="home" element={<Home />} />
+              <Route path="/mua-ve/:movieName" element={<BuyTicket />} />
+              <Route path="/booking/:movieName" element={<Booking />} />
+            </Route>
+          </Routes>
+        </Router>
+      </MovieProvider>
     </AppContextProvider>
   );
 }
