@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const buyTicketClient = axios.create({
-  baseURL: `${process.env.REACT_APP_API_URL}/buy-ticket`,
+  baseURL: `http://165.22.244.209:80/buy-ticket`,
   headers: {
     "Content-Type": "application/json",
   },
