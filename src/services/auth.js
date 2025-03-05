@@ -1,7 +1,8 @@
 import axios from "axios";
 
+
 const authClient = axios.create({
-  baseURL: "http://165.22.244.209:80/auth",
+  baseURL: `${process.env.REACT_APP_API_URL}/auth`,
   headers: {
     "Content-Type": "application/json",
   },

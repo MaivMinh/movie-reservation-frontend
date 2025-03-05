@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const movieClient = axios.create({
-  baseURL: "http://localhost:8888/movies",
+  baseURL: `${process.env.REACT_APP_API_URL}/movies`,
   headers: {
     "Content-Type": "application/json",
   },

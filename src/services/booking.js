@@ -1,8 +1,7 @@
 import axios from "axios";
 
 const bookingClient = axios.create({
-  //baseURL: "http://165.22.244.209:80/bookings",
-  baseURL: "http://localhost:8888/bookings",
+  baseURL: `${process.env.REACT_APP_API_URL}/bookings`,
   headers: {
     "Content-Type": "application/json",
   },
