@@ -1,10 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/api-docs/:path*",
-      "destination": "https://movie-reservation-frontend.vercel.app/api-docs/:path*"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
