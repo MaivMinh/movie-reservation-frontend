@@ -2,7 +2,7 @@ import axios from "axios";
 
 
 const authClient = axios.create({
-  baseURL: `https://moviereservation.software/auth`,
+  baseURL: `https://moviereservation.software/api/auth`,
   headers: {
     "Content-Type": "application/json",
   },
