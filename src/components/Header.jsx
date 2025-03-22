@@ -1,6 +1,6 @@
 import { Button, Dropdown, Space } from "antd";
 import { useContext } from "react";
-import { AppContext } from "../AppContext";
+import { AppContext } from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
 
 const items = [
@@ -69,7 +69,7 @@ const Header = () => {
     <header className="w-full min-h-20 h-6  py-4 flex flex-row rounded-b-xl border-[#ebebeb] border-b-2">
       <div className="w-full h-full mx-auto max-w-[1280px]">
         <nav className="flex flex-row justify-between items-center">
-          <a href="/">
+          <button onClick={() => navigate("/home")} className="cursor-pointer" >
             <img
               src={
                 "https://www.galaxycine.vn/_next/static/media/galaxy-logo-mobile.074abeac.png"
@@ -77,7 +77,7 @@ const Header = () => {
               alt="galaxy logo"
               className="w-[115px] h-[60px] ml-4 mr-12"
             />
-          </a>
+          </button>
           <div className="flex flex-row justify-center items-center min-w-[700px] gap-x-10">
             <a className="mr-4" href="/bookings">
               <img

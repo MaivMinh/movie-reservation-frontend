@@ -4,7 +4,7 @@ import authClient from "../services/auth.js";
 import Title from "antd/es/skeleton/Title.js";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { AppContext } from "../AppContext.jsx";
+import { AppContext } from "../context/AppContext.jsx";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);

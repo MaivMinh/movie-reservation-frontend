@@ -1,6 +1,6 @@
 import { jwtDecode } from "jwt-decode";
 import React, { createContext, useState, useEffect, useContext } from "react";
-import profileClient from "./services/profile.js";
+import profileClient from "../services/profile.js";
 
 export const AppContext = createContext({
   accountId: null,
@@ -57,7 +57,7 @@ export const AppContextProvider = ({ children }) => {
         setRole(data.roles);
       }
     } catch (error) {
-      console.error("Failed to get profile:", payload.message);
+      console.error("Failed to get profile:", error);
     }
   };
 
