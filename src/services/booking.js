@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const bookingClient = axios.create({
-  baseURL: `http://localhost:8888/api/bookings`,
+  baseURL: `http://moviereservation.software/api/bookings`,
   headers: {
     "Content-Type": "application/json",
   },
