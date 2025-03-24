@@ -1,7 +1,7 @@
 import { Client } from "@stomp/stompjs";
 
 const client = new Client({
-  brokerURL: "ws://localhost:8081/bookings",
+  brokerURL: "ws://moviereservation.software/bookings",
   reconnectDelay: 5000,
   heartbeatIncoming: 4000,
   heartbeatOutgoing: 4000,
