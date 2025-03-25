@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import bookingClient from "../services/booking";
 import Seat from "../components/Seat";
 import getDayOfWeek from "../utils/dayOfWeek";
 import getDayAndMonth from "../utils/getDayAndMonth";
@@ -9,6 +8,7 @@ import { SoundTwoTone, SyncOutlined } from "@ant-design/icons";
 import client from "../services/bookingWs";
 import { BookingContext } from "../context/BookingContext";
 import { AppContext } from "../context/AppContext";
+import apiClient from "../services/apiClient";
 
 const Booking = () => {
   const [searchParams] = useSearchParams(); // Gets query parameters
@@ -27,15 +27,15 @@ const Booking = () => {
     const removeExistingQueue = async () => {
       try {
         // Thử xóa queue cũ nếu có
-        await bookingClient.post("/queues/remove", { accountId: accountId });
+        await apiClient.post("/api/bookings/queues/remove", { accountId: accountId });
       } catch (error) {
         console.error("Connection setup failed:", error);
       }
     };
     removeExistingQueue();
 
-    bookingClient
-      .post("/queues/declare", { accountId: accountId })
+    apiClient
+      .post("/api/bookings/queues/declare", { accountId: accountId })
       .then((response) => {
         if (response.data.status === 200 || response.data.status === 201) {
           client.onConnect = (frame) => {
@@ -85,8 +85,8 @@ const Booking = () => {
       });
 
     return () => {
-      bookingClient
-        .post("/queues/remove", { accountId: accountId })
+      apiClient
+        .post("/api/bookings/queues/remove", { accountId: accountId })
         .then((response) => {
           console.log("Queue removed successfully:", response.data);
         })
@@ -108,7 +108,7 @@ const Booking = () => {
     }
     setLoading(true);
     try {
-      const response = await bookingClient.post("/seats/hold", {
+      const response = await apiClient.post("/api/bookings/seats/hold", {
         showtimeId: showtimeId,
         seats: [...selectedSeat],
       });
@@ -148,7 +148,7 @@ const Booking = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await bookingClient.get(`/${showtimeId}`);
+      const response = await apiClient.get(`/api/bookings/${showtimeId}`);
       if (response.data.status === 200) {
         setData(response.data.data);
       } else {

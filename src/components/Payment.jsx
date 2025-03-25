@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import { SyncOutlined } from "@ant-design/icons";
 import { BookingContext } from "../context/BookingContext";
 import { Button, Modal } from "antd";
 import { useNavigate } from "react-router-dom";
-import bookingClient from "../services/booking";
+import apiClient from "../services/apiClient";
 
 const Payment = () => {
   const [paymentMethod, setPaymentMethod] = useState("credit");
@@ -49,8 +48,7 @@ const Payment = () => {
         if (prevTime <= 1000) {
           clearInterval(intervalId);
           /// Thực hiện gửi request tới phía Server để giải phóng ghế.
-          const response = bookingClient.post("/release")
-          
+          apiClient.post("/api/bookings/queues/remove")
           warning("Hết thời gian giữ ghế", "Vui lòng chọn ghế lại");
           window.history.back();
         }

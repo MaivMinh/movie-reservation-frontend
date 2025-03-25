@@ -1,5 +1,5 @@
 import React, { createContext, useEffect } from "react";
-import movieClient from "../services/movie";
+import apiClient from "../services/apiClient";
 
 export const MovieContext = createContext({
   nowPlayingMovies: [],
@@ -12,7 +12,7 @@ export const MovieProvider = ({ children }) => {
 
   const fetchMoviesByUrl = async (url) => {
     /* Thực hiện lấy dữ liệu now playing movies. */
-    const response = await movieClient.get(url);
+    const response = await apiClient.get("/api/movies");
     const payload = response.data;
     if (payload.status === 200) {
       return payload.data.movies;

@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
-import buyTicketClient from "../services/buyTicket.js";
 import { MovieContext } from "../context/MovieContext.jsx";
 import NowPlayingMovie from "../components/NowPlayingMovie.jsx";
 import Showtimes from "../components/Showtimes.jsx";
@@ -8,6 +7,7 @@ import { Button, Select, Table } from "antd";
 import getDayOfWeek from "../utils/dayOfWeek.js";
 import getDayAndMonth from "../utils/getDayAndMonth.js";
 import toASCIISlug from "../utils/slug.js";
+import apiClient from "../services/apiClient.js";
 
 const BuyTicket = () => {
   const [searchParams] = useSearchParams(); // Gets query parameters
@@ -20,7 +20,7 @@ const BuyTicket = () => {
   const [loading, setLoading] = useState(false);
 
   const fetchData = async () => {
-    const response = await buyTicketClient.get(`/${movieId}`);
+    const response = await apiClient.get(`/api/buy-ticket/${movieId}`);
     const payload = response.data;
     if (payload.status === 200) {
       setInfo(payload.data);

@@ -1,8 +1,8 @@
 import { Carousel, Skeleton, Slider } from "antd";
 import React, { useEffect, useRef } from "react";
-import movieClient from "../../services/movie.js";
 import MovieCard from "../../components/MovieCard";
 import MovieCategoryButton from "../../components/MovieCategoryButton.jsx";
+import apiClient from "../../services/apiClient.js";
 
 const contentStyle = {
   borderRadius: "16px",
@@ -21,8 +21,8 @@ const Home = () => {
   const choosed = useRef("now_playing");
 
   const fetchData = async () => {
-    movieClient
-      .get(movieApi.current)
+    apiClient
+      .get(`/api/movies${movieApi.current}`)
       .then((response) => {
         const payload = response.data;
         if (payload.status === 200) {

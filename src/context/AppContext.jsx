@@ -1,6 +1,6 @@
 import { jwtDecode } from "jwt-decode";
 import React, { createContext, useState, useEffect, useContext } from "react";
-import profileClient from "../services/profile.js";
+import apiClient from "../services/apiClient.js";
 
 export const AppContext = createContext({
   accountId: null,
@@ -40,7 +40,7 @@ export const AppContextProvider = ({ children }) => {
 
   const getProfile = async () => {
     try {
-      const response = await profileClient.get("/profile", {
+      const response = await apiClient.get("/api/profile", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access-token")}`,
         },
