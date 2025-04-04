@@ -7,7 +7,7 @@ import { Button, message, Modal } from "antd";
 import { SoundTwoTone, SyncOutlined } from "@ant-design/icons";
 import client from "../services/bookingWs";
 import { BookingContext } from "../context/BookingContext";
-import { AppContext } from "../context/AppContext";
+import { AuthContext } from "../context/AuthContext";
 import apiClient from "../services/apiClient";
 
 const Booking = () => {
@@ -20,7 +20,7 @@ const Booking = () => {
   const { updateMovie, updateShowtime, updateSeats, updateData } =
     useContext(BookingContext);
   const [loading, setLoading] = useState(false);
-  const { accountId } = useContext(AppContext);
+  const { accountId } = useContext(AuthContext);
 
   useEffect(() => {
     /// Thực hiện request yêu cầu tạo queue mới tương ứng cho Client.

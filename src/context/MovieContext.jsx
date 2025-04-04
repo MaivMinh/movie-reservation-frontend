@@ -1,5 +1,6 @@
-import React, { createContext, useEffect } from "react";
+import React, { createContext, useContext, useEffect } from "react";
 import apiClient from "../services/apiClient";
+import { AuthContext } from "./AuthContext";
 
 export const MovieContext = createContext({
   nowPlayingMovies: [],
@@ -9,6 +10,7 @@ export const MovieContext = createContext({
 export const MovieProvider = ({ children }) => {
   const [nowPlayingMovies, setNowPlayingMovies] = React.useState([]);
   const [upComingMovies, setUpComingMovies] = React.useState([]);
+  const { auth } = useContext(AuthContext);
 
   const fetchMoviesByUrl = async (url) => {
     /* Thực hiện lấy dữ liệu now playing movies. */
@@ -30,8 +32,10 @@ export const MovieProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    fetchMovies();
-  }, []);
+    if (auth.isAuthenticated) {
+      fetchMovies();
+    }
+  }, [auth]);
 
   return (
     <MovieContext.Provider value={{ nowPlayingMovies, upComingMovies }}>

@@ -1,7 +1,8 @@
 import axios from "axios";
 
 /// Cấu hình chung.
-const API_BASE_URL = "https://moviereservation.software";
+///const API_BASE_URL = "https://moviereservation.software";
+const API_BASE_URL = "http://localhost:8888/";
 
 /// Tạo instance tập trung.
 const apiClient = axios.create({
@@ -46,26 +47,6 @@ apiClient.getData = async (url, params = {}, config = {}) => {
     params,
     ...config,
   });
-  return response.data;
-};
-
-apiClient.postData = async (url, data = {}, config = {}) => {
-  const response = await apiClient.post(url, data, config);
-  return response.data;
-};
-
-apiClient.putData = async (url, data = {}, config = {}) => {
-  const response = await apiClient.put(url, data, config);
-  return response.data;
-};
-
-apiClient.patchData = async (url, data = {}, config = {}) => {
-  const response = await apiClient.patch(url, data, config);
-  return response.data;
-}
-
-apiClient.deleteData = async (url, config = {}) => {
-  const response = await apiClient.delete(url, config);
   return response.data;
 };
 
