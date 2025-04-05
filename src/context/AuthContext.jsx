@@ -23,7 +23,18 @@ export const AuthContextProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem("access-token");
     if (token) {
-      handleLogin({ accessToken: token });
+      handleLogin(token);
+    } else  {
+      setAuth((prev) => {
+        return {
+          ...prev,
+          isAuthenticated: false,
+          accountId: null,
+          role: null,
+        };
+      });
+      localStorage.removeItem("access-token");
+      localStorage.removeItem("profile");
     }
     setLoading(false);
   }, []);
@@ -37,11 +48,10 @@ export const AuthContextProvider = ({ children }) => {
           return {
             ...prev,
             isAuthenticated: true,
-            accountId: decodedToken.accountId,
+            accountId: decodedToken.account_id,
             role: decodedToken.role,
           };
         });
-        getProfile();
       }
     } catch (error) {
       console.error("Failed to decode token:", error);
@@ -70,24 +80,6 @@ export const AuthContextProvider = ({ children }) => {
       };
     });
   }
-
-  const getProfile = async () => {
-    try {
-      const response = await apiClient.get("/api/profile");
-      const payload = response.data;
-      if (payload.status === 200) {
-        const data = payload.data;
-        const profile = {
-          username: data.username,
-          email: data.email,
-          role: data.roles,
-        };
-        localStorage.setItem("profile", JSON.stringify(profile));
-      }
-    } catch (error) {
-      console.error("Failed to get profile:", error);
-    }
-  };
 
   return (
     <AuthContext.Provider

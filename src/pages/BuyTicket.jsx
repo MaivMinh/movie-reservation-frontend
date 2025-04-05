@@ -17,18 +17,22 @@ const BuyTicket = () => {
   /* Thực hiện việc lấy dữ liệu bookings chung cho movie. */
   const [info, setInfo] = useState(null);
   const { nowPlayingMovies } = useContext(MovieContext);
-  const [loading, setLoading] = useState(false);
-
-  const fetchData = async () => {
-    const response = await apiClient.get(`/api/buy-ticket/${movieId}`);
-    const payload = response.data;
-    if (payload.status === 200) {
-      setInfo(payload.data);
-    }
-  };
 
   useEffect(() => {
-    if (movieId) fetchData();
+    if (movieId) {
+      const fetchData = async () => {
+        apiClient
+          .get(`/api/buy-ticket/${movieId}`)
+          .then((response) => {
+            const payload = response.data;
+            setInfo(payload.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      };
+      fetchData();
+    }
   }, [movieId]);
 
   const movie = info?.movie;

@@ -26,7 +26,8 @@ const Home = () => {
     apiClient
       .get(`/api/movies${movieApi.current}`)
       .then((response) => {
-        // Your existing code
+        const payload = response.data;
+        setData(payload.data?.movies);
         setLoading(false);
       })
       .catch((error) => {

@@ -8,7 +8,11 @@ const PublicPage = ({ children }) => {
 
   if (loading) return;
 
-  return !auth.isAuthenticated ? children : window.history.back();
+  return !auth.isAuthenticated ? (
+    children
+  ) : (
+    <Navigate to="/" state={{ from: location.pathname }} replace />
+  );
 };
 
 export default PublicPage;
