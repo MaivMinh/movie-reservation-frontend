@@ -19,22 +19,20 @@ const Home = () => {
   const hasFetchedData = useRef(false);
   const movieApi = useRef("");
   const choosed = useRef("now_playing");
+  const [loading, setLoading] = React.useState(true);
 
   const fetchData = async () => {
+    setLoading(true);
     apiClient
       .get(`/api/movies${movieApi.current}`)
       .then((response) => {
         const payload = response.data;
-        if (payload.status === 200) {
-          console.log(payload.data.movies);
-          setData(() => {
-            return [...payload.data.movies];
-          });
-          hasFetchedData.current = true;
-        }
+        setData(payload.data?.movies);
+        setLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        console.error("Error fetching movies:", error);
+        setLoading(false);
       });
   };
 
@@ -42,7 +40,7 @@ const Home = () => {
     if (!hasFetchedData.current) {
       fetchData();
     }
-  }, [data]);
+  }, []);
 
   const chooseCategory = ({ api, id }) => {
     choosed.current = id;

@@ -1,6 +1,6 @@
 import { Button, Dropdown, Space } from "antd";
 import { useContext } from "react";
-import { AppContext } from "../context/AppContext";
+import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const items = [
@@ -53,7 +53,7 @@ const cinemas = [
 ];
 
 const Header = () => {
-  const { isAuthenticated, logout } = useContext(AppContext);
+  const { auth, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const login = () => {
@@ -69,7 +69,7 @@ const Header = () => {
     <header className="w-full min-h-20 h-6  py-4 flex flex-row rounded-b-xl border-[#ebebeb] border-b-2">
       <div className="w-full h-full mx-auto max-w-[1280px]">
         <nav className="flex flex-row justify-between items-center">
-          <button onClick={() => navigate("/home")} className="cursor-pointer" >
+          <button onClick={() => navigate("/home")} className="cursor-pointer">
             <img
               src={
                 "https://www.galaxycine.vn/_next/static/media/galaxy-logo-mobile.074abeac.png"
@@ -127,24 +127,18 @@ const Header = () => {
             </div>
           </div>
           <div className="mr-4 flex flex-row justify-end items-center">
-            {isAuthenticated ? (
-              <a>
-                <Button
-                  onClick={handleLogout}
-                  className="text-black"
-                  type="primary"
-                  danger
-                >
-                  Đăng xuất
-                </Button>
-              </a>
-            ) : (
-              <a>
-                <Button onClick={login} className="text-black" type="primary">
-                  Đăng nhập
-                </Button>
-                
-              </a>
+            {auth.isAuthenticated && (
+              <Button
+                onClick={handleLogout}
+                color="orange"
+                variant="solid"
+                style={{
+                  fontSize: "16px",
+                  fontWeight: "450",
+                }}
+              >
+                Đăng xuất
+              </Button>
             )}
           </div>
         </nav>

@@ -3,11 +3,11 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Seat from "../components/Seat";
 import getDayOfWeek from "../utils/dayOfWeek";
 import getDayAndMonth from "../utils/getDayAndMonth";
-import { Button, message, Modal } from "antd";
-import { SoundTwoTone, SyncOutlined } from "@ant-design/icons";
+import { Button, Modal } from "antd";
+import { SyncOutlined } from "@ant-design/icons";
 import client from "../services/bookingWs";
 import { BookingContext } from "../context/BookingContext";
-import { AppContext } from "../context/AppContext";
+import { AuthContext } from "../context/AuthContext";
 import apiClient from "../services/apiClient";
 
 const Booking = () => {
@@ -20,30 +20,31 @@ const Booking = () => {
   const { updateMovie, updateShowtime, updateSeats, updateData } =
     useContext(BookingContext);
   const [loading, setLoading] = useState(false);
-  const { accountId } = useContext(AppContext);
+  const { auth } = useContext(AuthContext);
 
   useEffect(() => {
-    /// Thực hiện request yêu cầu tạo queue mới tương ứng cho Client.
-    const removeExistingQueue = async () => {
-      try {
-        // Thử xóa queue cũ nếu có
-        await apiClient.post("/api/bookings/queues/remove", { accountId: accountId });
-      } catch (error) {
-        console.error("Connection setup failed:", error);
-      }
-    };
-    removeExistingQueue();
+    if (auth.isAuthenticated) {
+      /// Thực hiện request yêu cầu tạo queue mới tương ứng cho Client.
+      const removeExistingQueue = async () => {
+        try {
+          // Thử xóa queue cũ nếu có
+          await apiClient.post("/api/bookings/queues/remove", {
+            accountId: auth.accountId,
+          });
+        } catch (error) {
+          console.error("Connection setup failed:", error);
+        }
+      };
+      removeExistingQueue();
 
-    apiClient
-      .post("/api/bookings/queues/declare", { accountId: accountId })
-      .then((response) => {
-        if (response.data.status === 200 || response.data.status === 201) {
+      apiClient
+        .post("/api/bookings/queues/declare", { accountId: auth.accountId })
+        .then((response) => {
           client.onConnect = (frame) => {
             console.log(frame);
             client.subscribe(
-              `/queue/holding.${accountId}`,
+              `/queue/holding.${auth.accountId}`,
               (message) => {
-                console.log(message);
                 try {
                   const payload = JSON.parse(message.body);
                   const { seats } = payload;
@@ -55,7 +56,10 @@ const Booking = () => {
                           (s) => s.seatId === seat.id
                         );
                         if (updatedSeat) {
-                          return { ...seat, isReserved: updatedSeat.reserved };
+                          return {
+                            ...seat,
+                            isReserved: updatedSeat.reserved,
+                          };
                         }
                         return seat;
                       });
@@ -78,29 +82,27 @@ const Booking = () => {
             );
           };
           client.activate();
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    return () => {
-      apiClient
-        .post("/api/bookings/queues/remove", { accountId: accountId })
-        .then((response) => {
-          console.log("Queue removed successfully:", response.data);
         })
         .catch((error) => {
-          console.error("Failed to remove queue:", error);
+          console.log(error);
         });
 
-      client.deactivate();
-      console.log("WebSocket connection deactivated");
-    };
-  }, [showtimeId]); /// Add showtime as a dependency
+      return () => {
+        apiClient
+          .post("/api/bookings/queues/remove", { accountId: auth.accountId })
+          .then((response) => {
+            console.log("Queue removed successfully:", response.data);
+          })
+          .catch((error) => {
+            console.error("Failed to remove queue:", error);
+          });
+
+        client.deactivate();
+      };
+    }
+  }, [showtimeId, auth]); /// Add showtime as a dependency
 
   const enterLoading = async () => {
-    if (accountId === null) return;
     if (loading) return; // Prevents infinite loop
     if (selectedSeat.size === 0) {
       warning("Vui lòng chọn ghế muốn đặt!");
@@ -112,19 +114,17 @@ const Booking = () => {
         showtimeId: showtimeId,
         seats: [...selectedSeat],
       });
+      console.log(response);
       setSelectedSeat(new Set());
-      if (response.data.status == 200) {
-        /// Lưu thông tin booking vào trong context.
-        updateMovie(movie);
-        updateShowtime(showtime);
-        updateSeats([...selectedSeat]);
-        updateData(data);
-        navigate(`/booking/${movieName}/payment`);
-      } else {
-        warning(response.data.message);
-      }
-    } catch (err) {
-      console.log(err);
+      /// Lưu thông tin booking vào trong context.
+      updateMovie(movie);
+      updateShowtime(showtime);
+      updateSeats([...selectedSeat]);
+      updateData(data);
+      navigate(`/booking/${movieName}/payment`);
+    } catch (error) {
+      console.log(error);
+      warning(error.response?.data.message);
     } finally {
       setLoading(false);
       setSelectedSeat(new Set());
@@ -147,16 +147,19 @@ const Booking = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await apiClient.get(`/api/bookings/${showtimeId}`);
-      if (response.data.status === 200) {
-        setData(response.data.data);
-      } else {
-        console.log(response.data.message);
-      }
-    };
-    fetchData();
-  }, []);
+    if (auth.isAuthenticated) {
+      apiClient
+        .get(`/api/bookings/${showtimeId}`)
+        .then((response) => {
+          const payload = response.data;
+          const data = payload.data;
+          setData(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching booking data:", error);
+        });
+    }
+  }, [auth]);
 
   const handleSeatSelection = (seat) => {
     if (loading) return; // Prevents selecting seats while loading

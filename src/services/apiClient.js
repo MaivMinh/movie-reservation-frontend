@@ -49,24 +49,4 @@ apiClient.getData = async (url, params = {}, config = {}) => {
   return response.data;
 };
 
-apiClient.postData = async (url, data = {}, config = {}) => {
-  const response = await apiClient.post(url, data, config);
-  return response.data;
-};
-
-apiClient.putData = async (url, data = {}, config = {}) => {
-  const response = await apiClient.put(url, data, config);
-  return response.data;
-};
-
-apiClient.patchData = async (url, data = {}, config = {}) => {
-  const response = await apiClient.patch(url, data, config);
-  return response.data;
-}
-
-apiClient.deleteData = async (url, config = {}) => {
-  const response = await apiClient.delete(url, config);
-  return response.data;
-};
-
 export default apiClient;
