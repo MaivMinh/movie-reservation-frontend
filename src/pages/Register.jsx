@@ -33,15 +33,23 @@ const Register = () => {
     };
 
     // Replace this with your actual API call
-    apiClient.post("/api/auth/register", registration).then((res) => {
-      const payload = res.data;
-      setLoading(false);
-      if (payload.status === 200) {
+    apiClient
+      .post("/api/auth/register", registration)
+      .then((res) => {
+        setLoading(false);
         navigate("/login?registered=true");
-      } else {
-        setError(payload.message);
-      }
-    });
+      })
+      .catch((error) => {
+        setLoading(false);
+        if (error.response) {
+          setError(
+            error.response.data?.message ||
+              "Có lỗi xảy ra. Vui lòng thử lại sau."
+          );
+        } else {
+          setError("Không thể kết nối đến máy chủ. Vui lòng thử lại sau.");
+        }
+      });
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -50,8 +58,18 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-indigo-900 p-4">
-      <div className="grid md:grid-cols-2 w-full max-w-5xl bg-white rounded-xl shadow-2xl overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-indigo-900 p-4 relative">
+      <div
+        className="absolute inset-0 bg-cover bg-center z-0"
+        style={{
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1440404653325-ab127d49abc1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80')",
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-900/80 to-purple-900/80"></div>
+      </div>
+
+      <div className="grid md:grid-cols-2 w-full max-w-5xl bg-white rounded-xl shadow-2xl overflow-hidden z-10">
         {/* Left side - Registration Form */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -187,7 +205,7 @@ const Register = () => {
                 icon={<UserAddOutlined />}
                 className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 rounded-lg"
               >
-                Đăng kí
+                Register
               </Button>
             </Form.Item>
           </Form>
@@ -201,7 +219,7 @@ const Register = () => {
             onClick={() => navigate("/login")}
             className="w-full h-12 border-indigo-600 text-indigo-600 hover:text-indigo-700 hover:border-indigo-700 rounded-lg"
           >
-            Đăng nhập
+            Log In
           </Button>
         </motion.div>
 

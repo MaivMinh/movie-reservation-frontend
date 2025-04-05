@@ -85,9 +85,18 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-indigo-900 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-indigo-900 p-4 relative">
+      <div
+        className="absolute inset-0 bg-cover bg-center z-0"
+        style={{
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1616530940355-351fabd9524b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1635&q=80')",
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-900/80 to-purple-900/80"></div>
+      </div>
       {contextHolder}
-      <div className="grid md:grid-cols-2 w-full max-w-5xl bg-white rounded-xl shadow-2xl overflow-hidden">
+      <div className="grid md:grid-cols-2 w-full max-w-5xl bg-white rounded-xl shadow-2xl overflow-hidden z-10">
         {/* Left side - Login Form */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -142,17 +151,16 @@ const Login = () => {
               />
             </Form.Item>
 
+            <div className="flex justify-between items-center mb-4">
+              <button
+                type="button"
+                className="p-0 font-semibold text-purple-600 hover:text-purple-800 cursor-pointer"
+                onClick={() => navigate("/account/forgot-password")}
+              >
+                Forgot password?
+              </button>
+            </div>
             <Form.Item>
-              <div className="flex justify-between items-center mb-4">
-                <button
-                  type="link"
-                  className="p-0 font-semibold text-purple-600 hover:text-purple-800 cursor-pointer"
-                  to={"/account/forgot-password"}
-                >
-                  Quên mật khẩu?
-                </button>
-              </div>
-
               <Button
                 type="primary"
                 htmlType="submit"
@@ -178,7 +186,7 @@ const Login = () => {
           </Form>
 
           <Divider plain>
-            <span className="text-gray-400">hoặc đăng nhập với</span>
+            <span className="text-gray-400 font-semibold">or login with</span>
           </Divider>
           <div className="w-full flex flex-row justify-center items-center -mt-3">
             <a className="cursor-pointer" href="https://google.com">

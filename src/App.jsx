@@ -13,6 +13,8 @@ import Payment from "./components/Payment.jsx";
 import { BookingProvider } from "./context/BookingContext.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
 import PublicPage from "./components/PublicPage.jsx";
+import ForgotPassword from "./components/ForgotPassword.jsx";
+import ResetPassword from "./components/ResetPassword.jsx";
 
 function App() {
   return (
@@ -34,6 +36,22 @@ function App() {
                 element={
                   <PublicPage>
                     <Register />
+                  </PublicPage>
+                }
+              />
+              <Route
+                path="/account/forgot-password"
+                element={
+                  <PublicPage>
+                    <ForgotPassword />
+                  </PublicPage>
+                }
+              />
+              <Route
+                path="/account/reset-password"
+                element={
+                  <PublicPage>
+                    <ResetPassword />
                   </PublicPage>
                 }
               />
