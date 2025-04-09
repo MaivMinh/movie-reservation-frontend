@@ -13,6 +13,27 @@ const apiClient = axios.create({
   timeout: 10000,
 });
 
+const refreshToken = async () => {
+  const refreshToken = localStorage.getItem("refresh-token");
+  if (!refreshToken) {
+    return Promise.reject("No refresh token found");
+  }
+
+  return apiClient
+    .post("/api/auth/refresh-token", { refreshToken })
+    .then((response) => {
+      const payload = response.data;
+      const data = payload.data;
+      const newAccessToken = data.accessToken;
+      localStorage.setItem("access-token", newAccessToken);
+      return newAccessToken;
+    })
+    .catch((error) => {
+      console.error("Failed to refresh token:", error);
+      return null;
+    });
+};
+
 /// Interceptors cho request.
 apiClient.interceptors.request.use(
   (config) => {
@@ -29,17 +50,35 @@ apiClient.interceptors.request.use(
   }
 );
 
-/// Interceptors cho response.
-apiClient.interceptors.response.use((response) => {
-  // Do something with response data
-  if (response.data && response.data.status) {
-    if (response.data.status === 401) {
+apiClient.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    // Do something with response error
+    if (error.response && error.response.status === 498) {
+      // Handle unauthorized access
       localStorage.removeItem("access-token");
-      window.location.href = "/login";
+      /// Thực hiện refresh token.
+
+      const newAccessToken = await refreshToken();
+      if (newAccessToken) {
+        localStorage.setItem("access-token", newAccessToken);
+        error.config.headers["Authorization"] = `Bearer ${newAccessToken}`;
+        // Retry the original request with the new access token
+        return apiClient(error.config);
+      }
     }
+    if (error.response && error.response.status === 499) {
+      /// Handle refresh token expired.
+      localStorage.removeItem("access-token");
+      localStorage.removeItem("refresh-token");
+      localStorage.removeItem("profile");
+      window.location.href = "/login?expired=true";
+      /// Redirect to login page.
+      return Promise.reject("Refresh token expired");
+    }
+    return Promise.reject(error);
   }
-  return response;
-});
+);
 
 apiClient.getData = async (url, params = {}, config = {}) => {
   const response = await apiClient.get(url, {

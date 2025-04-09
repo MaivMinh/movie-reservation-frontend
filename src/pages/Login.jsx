@@ -30,6 +30,7 @@ const Login = () => {
   const { login, auth } = useContext(AuthContext);
   const params = new URLSearchParams(window.location.search);
   const registered = params.get("registered");
+  const expired = params.get("expired");
   const [api, contextHolder] = notification.useNotification();
   const openNotificationWithIcon = (type, title, description, duration) => {
     api[type]({
@@ -44,6 +45,14 @@ const Login = () => {
   useEffect(() => {
     // Optional: Add a simple animation when the component mounts
     document.title = "Login - Movie Reservation System";
+    if (expired && expired === "true") {
+      openNotificationWithIcon(
+        "error",
+        "Phiên đăng nhập đã hết hạn!",
+        "Vui lòng đăng nhập lại để tiếp tục.",
+        5
+      );
+    }
     if (registered && registered === "true") {
       openNotificationWithIcon(
         "success",
@@ -70,6 +79,8 @@ const Login = () => {
         const payload = response.data;
         const data = payload.data;
         const accessToken = data.accessToken;
+        const refreshToken = data.refreshToken;
+        localStorage.setItem("refresh-token", refreshToken);
         login(accessToken);
         navigate(from, { replace: true });
       })

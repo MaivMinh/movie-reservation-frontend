@@ -64,12 +64,14 @@ export const AuthContextProvider = ({ children }) => {
         };
       });
       localStorage.removeItem("access-token");
+      localStorage.removeItem("refresh-token");
       localStorage.removeItem("profile");
     }
   }
 
   function handleLogout() {
     localStorage.removeItem("access-token");
+    localStorage.removeItem("refresh-token");
     localStorage.removeItem("profile");
     setAuth((prev) => {
       return {
