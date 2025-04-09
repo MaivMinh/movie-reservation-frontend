@@ -13,6 +13,18 @@ const apiClient = axios.create({
   timeout: 10000,
 });
 
+/* 
+- Lưu ý rằng hàm refreshToken phải được thực hiện synchronously.
+- Nếu không newAccessToken sẽ là một Promise object và khi retry sẽ không hợp lệ.
+- Do đó, ta cần await hàm refreshToken để lấy giá trị trả về là newAccessToken.
+
+- Sau khi có newAccessToken, ta cần lưu nó vào localStorage.
+- Tiếp đó, điều chỉnh lại Authorization header của error trước khi retry.
+- Tận dụng error object này, vì error object này bản chất là một request object với mã lỗi thay vì thành công.
+- Cuối cùng, ta gọi lại apiClient với config của error object.
+*/
+
+
 const refreshToken = async () => {
   const refreshToken = localStorage.getItem("refresh-token");
   if (!refreshToken) {
